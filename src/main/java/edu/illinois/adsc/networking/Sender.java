@@ -1,5 +1,7 @@
 package edu.illinois.adsc.networking;
 
+import org.apache.commons.lang.SerializationUtils;
+
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -35,7 +37,7 @@ public class Sender implements IConnection {
         try {
             out.writeObject(taskMessage);
             out.flush();
-            taskMessage = null;
+
         } catch (IOException e) {
             e.printStackTrace();
         }

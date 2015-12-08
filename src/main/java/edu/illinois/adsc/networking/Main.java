@@ -27,9 +27,9 @@ public class Main {
                         byte[] bytes = SerializationUtils.serialize(new Tuple());
                         Thread.sleep(0);
                         sender.send(taskid, bytes);
-//                        bytes.finalize();
+
                         count++;
-//                        delete bytes;
+
                         if(count % 10000 == 0 ) {
                             System.out.println("Send " + count + " tuples!");                        }
 //                        System.out.println("Sent!");
@@ -47,13 +47,16 @@ public class Main {
                 try{
                     int count = 0;
                     while(true) {
-                        Iterator<TaskMessage> messages = receiver.recv(0, 0);
 
-                        while(messages.hasNext()) {
-                            TaskMessage taskMessage = messages.next();
-                            count++;
-//                            System.out.println("Received task " + taskMessage.task() + " length:" + taskMessage.message().length);
-                        }
+                        receiver.recv();
+                        count++;
+//                        Iterator<TaskMessage> messages = receiver.recv(0, 0);
+//
+//                        while(messages.hasNext()) {
+//                            TaskMessage taskMessage = messages.next();
+//                            count++;
+////                            System.out.println("Received task " + taskMessage.task() + " length:" + taskMessage.message().length);
+//                        }
 
                         if(count % 10000 == 0 ) {
                             System.out.println("Received " + count + " tuples!");

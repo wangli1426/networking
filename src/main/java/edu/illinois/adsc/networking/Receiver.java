@@ -21,7 +21,7 @@ public class Receiver implements IConnection {
 
     Map<ObjectInputStream, Thread> inputStreamThreadMap = new HashMap<>();
 
-    LinkedBlockingQueue<TaskMessage> inputData = new LinkedBlockingQueue<>();
+    LinkedBlockingQueue<TaskMessage> inputData = new LinkedBlockingQueue<>(10);
     final int maxBatchSize = 1000;
 
     public Receiver(int port) {
@@ -70,6 +70,10 @@ public class Receiver implements IConnection {
                 }
             }
         }).start();
+    }
+
+    public TaskMessage recv() throws InterruptedException{
+        return inputData.take();
     }
 
     @Override
