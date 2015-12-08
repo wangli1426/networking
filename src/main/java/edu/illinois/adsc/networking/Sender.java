@@ -35,6 +35,7 @@ public class Sender implements IConnection {
         try {
             out.writeObject(taskMessage);
             out.flush();
+            taskMessage = null;
         } catch (IOException e) {
             e.printStackTrace();
         }

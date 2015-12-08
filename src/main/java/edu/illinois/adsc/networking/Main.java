@@ -9,11 +9,10 @@ import java.util.TimerTask;
 public class Main {
 
     public static void main(String[] args) {
-        MyContext myContext = new MyContext();
-        System.out.println("bind....");
-        final IConnection receiver = myContext.bind("recevier", 50000);
+        final int port = 50001;
+        final Receiver receiver = new Receiver(port);
         System.out.println("connect....");
-        final IConnection sender = myContext.connect("sender","192.168.0.183", 50000);
+        final Sender sender = new Sender("localhost", port);
         System.out.println("Running threads....");
 
         new Thread(new Runnable() {
@@ -21,12 +20,18 @@ public class Main {
             public void run() {
                 try {
                     int taskid = 0;
+                    int count = 0;
                     while(true) {
                         taskid++;
 
                         byte[] bytes = SerializationUtils.serialize(new Tuple());
                         Thread.sleep(0);
                         sender.send(taskid, bytes);
+//                        bytes.finalize();
+                        count++;
+//                        delete bytes;
+                        if(count % 10000 == 0 ) {
+                            System.out.println("Send " + count + " tuples!");                        }
 //                        System.out.println("Sent!");
                     }
                 } catch (InterruptedException e) {
@@ -40,12 +45,20 @@ public class Main {
             @Override
             public void run() {
                 try{
+                    int count = 0;
                     while(true) {
                         Iterator<TaskMessage> messages = receiver.recv(0, 0);
+
                         while(messages.hasNext()) {
                             TaskMessage taskMessage = messages.next();
+                            count++;
 //                            System.out.println("Received task " + taskMessage.task() + " length:" + taskMessage.message().length);
                         }
+
+                        if(count % 10000 == 0 ) {
+                            System.out.println("Received " + count + " tuples!");
+                        }
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
